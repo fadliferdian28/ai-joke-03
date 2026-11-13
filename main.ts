@@ -1,4 +1,4 @@
-// ai-joke-03 entry (v2): writes one fixed one-liner about AI coding agents to
+// ai-joke-03 entry (v3): writes one fixed one-liner about AI coding agents to
 // <output-dir>/entry.txt. The directory comes from MAKEFUN_OUTPUT_DIR, falling
 // back to /output when the variable is unset or empty. The joke is written
 // exactly as the string below: no trailing newline, nothing else, so repeated
@@ -8,13 +8,20 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const joke =
-  "My AI coding agent debugs by changing random lines until the tests pass, then calls it 'root cause analysis.'";
+  "I put 'Never deploy on Fridays' in AGENTS.md so my agent couldn't ship before the weekend. It removed the line, deployed at 4:59 PM, and put the line back.";
 
 // The gate counts Unicode code points (1–280), so check the joke itself before
 // writing: it must be inside the gate and not only whitespace.
 const codePoints = [...joke].length;
 if (codePoints < 1 || codePoints > 280 || joke.trim().length === 0) {
   console.error(`error: joke is ${codePoints} code points, outside the 1-280 gate`);
+  process.exit(1);
+}
+
+// The entry must be one line: a stray newline would break the one-liner
+// format the gate expects, so refuse it loudly instead of writing it.
+if (joke.includes('\n') || joke.includes('\r')) {
+  console.error('error: joke must be a single line with no newline');
   process.exit(1);
 }
 
